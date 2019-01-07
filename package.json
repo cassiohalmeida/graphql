@@ -1,0 +1,24 @@
+{
+  "name": "graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "graphpack",
+    "build": "graphpack build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cassiohalmeida/graphql.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cassiohalmeida/graphql/issues"
+  },
+  "homepage": "https://github.com/cassiohalmeida/graphql#readme",
+  "devDependencies": {
+    "graphpack": "^1.0.6"
+  }
+}
