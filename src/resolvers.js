@@ -3,10 +3,14 @@ var fs = require('fs');
 const resolvers = {
   Query: {
     user: (parent, { id }, context, info) => {
-      return users.find(user => user.id == id);
+      var obj = fs.readFileSync(__dirname + '/db.json', 'utf8');
+      let obj2 = JSON.parse(obj);
+      return obj2.users.find(user => user.id == id);
     },
     users: (parent, args, context, info) => {
-      return users;
+      var obj = fs.readFileSync(__dirname + '/db.json', 'utf8');
+      let obj2 = JSON.parse(obj);
+      return obj2.users;
     }
   },
   Mutation: {
