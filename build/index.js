@@ -396,30 +396,6 @@ webpackContext.id = "./src sync recursive ^\\.\\/(schema|schema\\/index)\\.(gql|
 
 /***/ }),
 
-/***/ "./src/db.js":
-/*!*******************!*\
-  !*** ./src/db.js ***!
-  \*******************/
-/*! exports provided: users */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "users", function() { return users; });
-let users = [{
-  id: 1,
-  name: "John Doe",
-  email: "john@gmail.com",
-  age: 22
-}, {
-  id: 2,
-  name: "Jane Doe",
-  email: "jane@gmail.com",
-  age: 23
-}];
-
-/***/ }),
-
 /***/ "./src/resolvers.js":
 /*!**************************!*\
   !*** ./src/resolvers.js ***!
@@ -429,17 +405,17 @@ let users = [{
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _db__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./db */ "./src/db.js");
+/* WEBPACK VAR INJECTION */(function(__dirname) {var fs = __webpack_require__(/*! fs */ "fs");
 
 const resolvers = {
   Query: {
     user: (parent, {
       id
     }, context, info) => {
-      return _db__WEBPACK_IMPORTED_MODULE_0__["users"].find(user => user.id == id);
+      return users.find(user => user.id == id);
     },
     users: (parent, args, context, info) => {
-      return _db__WEBPACK_IMPORTED_MODULE_0__["users"];
+      return users;
     }
   },
   Mutation: {
@@ -455,7 +431,19 @@ const resolvers = {
         email,
         age
       };
-      _db__WEBPACK_IMPORTED_MODULE_0__["users"].push(newUser);
+      fs.readFile(__dirname + '/db.json', 'utf8', function readFileCallback(err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+          let obj = JSON.parse(data); //now it an object
+
+          obj.users.push(newUser); //add some data
+
+          let json = JSON.stringify(obj); //convert it back to json
+
+          fs.writeFile(__dirname + '/db.json', json, 'utf8', () => {}); // write it back 
+        }
+      });
       return newUser;
     },
     updateUser: (parent, {
@@ -464,23 +452,41 @@ const resolvers = {
       email,
       age
     }, context, info) => {
-      let newUser = _db__WEBPACK_IMPORTED_MODULE_0__["users"].find(user => user.id === id);
-      newUser.name = name;
-      newUser.email = email;
-      newUser.age = age;
-      return newUser;
+      let returnable = {
+        id,
+        name,
+        email,
+        age
+      };
+      fs.readFile(__dirname + '/db.json', 'utf8', (err, data) => {
+        if (err) {
+          console.log(err);
+        } else {
+          let obj = JSON.parse(data); //now it an object
+
+          let newUser = obj.users.find(user => user.id === id);
+          newUser.name = name;
+          newUser.email = email;
+          newUser.age = age;
+          let json = JSON.stringify(obj); //convert it back to json
+
+          fs.writeFile(__dirname + '/db.json', json, 'utf8', () => {}); // write it back 
+        }
+      });
+      return returnable;
     },
     deleteUser: (parent, {
       id
     }, context, info) => {
-      const userIndex = _db__WEBPACK_IMPORTED_MODULE_0__["users"].findIndex(user => user.id === id);
+      const userIndex = users.findIndex(user => user.id === id);
       if (userIndex === -1) throw new Error("User not found.");
-      const deletedUsers = _db__WEBPACK_IMPORTED_MODULE_0__["users"].splice(userIndex, 1);
+      const deletedUsers = users.splice(userIndex, 1);
       return deletedUsers[0];
     }
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (resolvers);
+/* WEBPACK VAR INJECTION */}.call(this, "src"))
 
 /***/ }),
 
